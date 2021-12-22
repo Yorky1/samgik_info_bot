@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  info_bot:
+    build: ./
+    environment:
+      - SECRET_TOKEN=secret
