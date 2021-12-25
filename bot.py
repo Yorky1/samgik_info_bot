@@ -15,6 +15,6 @@ def send_welcome(message):
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     """Echo every message."""
-    bot.reply_to(message, "hi")
+    bot.reply_to(message, "hello")
 
 bot.infinity_polling()
