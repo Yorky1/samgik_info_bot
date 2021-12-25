@@ -10,4 +10,6 @@ COPY . .
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-CMD ["python", "bot.py"]
+RUN cat bot.py data.py > run.py
+
+CMD ["python", "run.py"]
