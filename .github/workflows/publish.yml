@@ -35,3 +35,4 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/samgik-info-bot:latest
+          
