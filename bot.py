@@ -25,6 +25,6 @@ def answer_question(message):
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     """Answer every incorrect message."""
-    bot.reply_to(message, 'Введи номер от 1 до 10, чтобы я смог ответить на твой вопрос')
+    bot.reply_to(message, 'Введи номер от 1 до 10, чтобы я смог ответить на твой вопрос. Чтобы узнать номера вопросов напиши /help')
 
 bot.infinity_polling()
