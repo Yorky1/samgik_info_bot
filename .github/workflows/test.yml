@@ -3,7 +3,8 @@ name: Test
 on: [push]
 
 jobs:
-  build-push:
+  run-tests:
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -20,4 +21,3 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint `ls -R|grep .py$|xargs`
-        
