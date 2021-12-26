@@ -26,15 +26,16 @@ def send_welcome(message):
     bot.send_message(message.chat.id,bot_data.welcome_message,reply_markup=keyboard("standart"))
 
 @bot.message_handler(func=lambda message: message.text == "Выйти")
-def answer_question(message):
+def exit_faq(message):
     """Exit message"""
-    bot.send_message(message.chat.id,"Окей, переходим в главное меню",reply_markup=keyboard("standart"))
+    bot.send_message(message.chat.id,"Окей, переходим в главное меню",
+        reply_markup=keyboard("standart"))
 
 @bot.message_handler(func=lambda message: message.text in bot_data.faq)
 def answer_faq(message):
     """Answer question."""
-    bot.reply_to(message, bot_data.faq[message.text])
-        
+    bot.reply_to(message,bot_data.faq[message.text])
+
 @bot.message_handler(func=lambda message: message.text in bot_data.questions_answers)
 def answer_question(message):
     """Answer question."""
@@ -47,6 +48,7 @@ def answer_question(message):
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     """Answer every incorrect message."""
-    bot.reply_to(message, "Ты задал вопрос, на который я не знаю ответа :( Выбери что-нибудь из меню")
+    bot.reply_to(message,
+        "Ты задал вопрос, на который я не знаю ответа :( Выбери что-нибудь из меню")
 
 bot.infinity_polling()
