@@ -6,7 +6,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.scope=myscope"
     environment:
-      - SECRET_TOKEN=token
+      - SECRET_TOKEN=5064469430:AAG4F3AFJZm5nGrUPokbi4Z46BMVFagzLWE
   watchtower:
     image: containrrr/watchtower
     volumes:
