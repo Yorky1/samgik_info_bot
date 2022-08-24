@@ -23,7 +23,7 @@ jobs:
         pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint --ignore=bot_data.py `ls -R|grep .py$|xargs`
+        pylint --ignore=strings.py `ls -R|grep .py$|xargs` --max-line-length=240
     - name: Check correctness of Dockerfile
       run: docker build .
   make-release:
