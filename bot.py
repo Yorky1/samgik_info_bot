@@ -146,7 +146,7 @@ async def contacts(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_id = update.effective_chat.id
     cur_state = context.user_data[STATE]
     faculty = context.user_data.setdefault(FACULTY, FACULTIES[0])
-    await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[cur_state][faculty])
+    await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[cur_state][faculty], parse_mode='MarkdownV2')
     context.user_data[STATE] = MENU_STATE
     await view_menu(update, context)
 
