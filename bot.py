@@ -69,7 +69,9 @@ async def view_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """View main menu"""
     chat_id = update.effective_chat.id
     cur_state = context.user_data[STATE]
-    await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[cur_state],reply_markup=REPLY_MARKUPS[cur_state])
+    text = STATE_MESSAGES[cur_state].copy()
+    text[1] += "<b>" + context.user_data.setdefault(FACULTY, FACULTIES[0]) + "</b>"
+    await context.bot.send_message(chat_id=chat_id, text="\n".join(text),reply_markup=REPLY_MARKUPS[cur_state], parse_mode='HTML')
 
 async def end_introduction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """End of introduction part"""
