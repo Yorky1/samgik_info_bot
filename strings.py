@@ -164,7 +164,9 @@ STATE_MESSAGES={
     "Студенты СГИКа занимаются в бассейне и ходят на секцию по волейболу. Все расскажут ребята из студсовета.\n"
     "https://t.me/sgikstudsovet"
     ],
-    17:"Выбери факультет"
+    17:"Выбери факультет",
+    18:["Тебе понравился праздник?", "Поздравляем тебя с первым днем в СГИКе! Прими от нас этот <a href='https://t.me/addstickers/SamGIK63'>символический подарок</a>!\n"
+    "Желаем интересных пар, знакомств, плодотворных репетиций и восторга от того, что ты занимаешься любимым делом."]
 }
 
 STATE_REPLIES={
@@ -175,13 +177,19 @@ STATE_REPLIES={
     13:[[["Хорошо!"]], [["Общежитие"], ["Снимаю квартиру"]]],
     14:[["Пешком", "На городском транспорте"], ["На самокате", "На крыльях любви"]],
     12:[["69 лет", "51 год", "118 лет"]],
-    17:[[x] for x in FACULTIES]
+    17:[[x] for x in FACULTIES],
+    18:[["Да!", "Нет."], ["Я в восхищении!", "Было супер!"]]
 }
 
 MENU_STATES=[]
 for v in STATE_REPLIES[5]:
     for s in v:
         MENU_STATES.append(s)
+
+FINAL_REPLIES=set()
+for v in STATE_REPLIES[18]:
+    for s in v:
+        FINAL_REPLIES.add(s)
 
 NEXT_STATE={
     1:2,
@@ -231,6 +239,7 @@ QUIZ_STATE=12
 RIGHT_ANSWER="51 год"
 SET_FACULTY_STATE=17
 PREV_STATE="prev_state"
-
+CHAT_IDS="chat_ids"
+FINAL_STATE=18
 
 FREE_ANSWER={CITY_STATE}

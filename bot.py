@@ -16,6 +16,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, TypeHandler
 
 from strings import (
+    FINAL_REPLIES,
     STATE_MESSAGES,
     MENU_STATES,
     NEXT_STATE,
@@ -36,7 +37,9 @@ from strings import (
     FACULTY_MESSAGES,
     FACULTIES,
     PREV_STATE,
-    SET_FACULTY_STATE
+    SET_FACULTY_STATE,
+    CHAT_IDS,
+    FINAL_STATE
 )
 
 DEBUG_MODE=False
@@ -81,6 +84,14 @@ async def end_introduction(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     context.user_data[STATE] = NEXT_STATE[cur_state]
     await view_menu(update, context)
 
+
+async def final_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send final message"""
+    chat_id = update.effective_chat.id
+    await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[FINAL_STATE][1], parse_mode='HTML')
+    await context.bot.send_sticker(chat_id=chat_id, sticker="CAACAgIAAxkBAAIMT2MIw7rMWBISWOcTJ-v3NvGL4Z0DAAIVIgACnhE5SKMY7CIGSdVXKQQ")
+    context.user_data[STATE] = MENU_STATE
+    await view_menu(update, context)
 
 async def form(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """'Анкета' button"""
@@ -187,7 +198,6 @@ async def set_faculty(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     context.user_data[STATE] = context.user_data[PREV_STATE]
     await MESSAGE_FUNCTION[context.user_data[STATE]](update, context)
 
-
 MESSAGE_FUNCTION={
     1:default_reply_by_state,
     2:default_reply_by_state,
@@ -205,13 +215,17 @@ MESSAGE_FUNCTION={
     11:contacts,
     12:about_sgik,
     16:about_sgik,
-    17:set_faculty
+    17:set_faculty,
+    18:final_message
 }
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Start message"""
     context.user_data[STATE] = 1
+    context.bot_data[CHAT_IDS].add(update.effective_chat.id)
+    if DEBUG_MODE:
+        print("CHAT_IDS=", context.bot_data[CHAT_IDS])
     await default_reply_by_state(update, context)
 
 #TL;DR
@@ -237,6 +251,10 @@ async def receive_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         return
 
     message = update.message.text
+
+    if message in FINAL_REPLIES:
+        await final_message(update, context)
+        return
 
     if context.user_data[STATE] in FREE_ANSWER and \
         (message not in STRING_STATES or context.user_data[STATE] != STRING_STATES[message]):
@@ -281,6 +299,13 @@ async def sticker_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     """Handle non text objects"""
     print(update.message)
 
+async def send_final_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send final message command"""
+    for chat_id in context.bot_data[CHAT_IDS]:
+        if DEBUG_MODE:
+            print("Sending to", chat_id)
+        await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[FINAL_STATE][0], reply_markup=REPLY_MARKUPS[FINAL_STATE])
+
 def main() -> None:
 
     """Start the bot."""
@@ -291,11 +316,13 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, receive_text))
     application.add_handler(CommandHandler("menu", menu))
     application.add_handler(CommandHandler("set_faculty", set_faculty))
+    application.add_handler(CommandHandler("send_final_message", send_final_message))
     if DEBUG_MODE:
         application.add_handler(CommandHandler("state", get_cur_state))
         application.add_handler(CommandHandler("set_state", set_state))
         application.add_handler(TypeHandler(type=object,callback=sticker_handler))
 
+    application.bot_data[CHAT_IDS] = set()
     application.run_polling()
 
 if __name__ == "__main__":
