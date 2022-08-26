@@ -34,7 +34,9 @@ from strings import (
     RIGHT_ANSWER,
     FREE_ANSWER,
     FACULTY_MESSAGES,
-    FACULTIES
+    FACULTIES,
+    PREV_STATE,
+    SET_FACULTY_STATE
 )
 
 DEBUG_MODE=False
@@ -168,6 +170,22 @@ async def about_sgik(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     context.user_data[STATE] = MENU_STATE
     await view_menu(update, context)
 
+async def set_faculty(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Menu command"""
+
+    cur_state = context.user_data[STATE]
+    chat_id = update.effective_chat.id
+    if cur_state != SET_FACULTY_STATE:
+        context.user_data[PREV_STATE] = cur_state
+        context.user_data[STATE] = SET_FACULTY_STATE
+        await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[SET_FACULTY_STATE], reply_markup=REPLY_MARKUPS[SET_FACULTY_STATE])
+        return
+
+    context.user_data[FACULTY] = update.message.text
+    context.user_data[STATE] = context.user_data[PREV_STATE]
+    await MESSAGE_FUNCTION[context.user_data[STATE]](update, context)
+
+
 MESSAGE_FUNCTION={
     1:default_reply_by_state,
     2:default_reply_by_state,
@@ -185,6 +203,7 @@ MESSAGE_FUNCTION={
     11:contacts,
     12:about_sgik,
     16:about_sgik,
+    17:set_faculty
 }
 
 
@@ -269,6 +288,7 @@ def main() -> None:
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, receive_text))
     application.add_handler(CommandHandler("menu", menu))
+    application.add_handler(CommandHandler("set_faculty", set_faculty))
     if DEBUG_MODE:
         application.add_handler(CommandHandler("state", get_cur_state))
         application.add_handler(CommandHandler("set_state", set_state))
