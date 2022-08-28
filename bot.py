@@ -149,8 +149,8 @@ async def procession(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 async def concert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """'Праздничный концерт' button"""
     chat_id = update.effective_chat.id
-    cur_state = context.user_data[STATE]
-    await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[cur_state])
+    with open("pics/concert.jpg", 'rb') as file_handler:
+        await context.bot.send_photo(chat_id=chat_id, photo=file_handler)
     context.user_data[STATE] = MENU_STATE
     await view_menu(update, context)
 
@@ -306,6 +306,14 @@ async def send_final_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
             print("Sending to", chat_id)
         await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[FINAL_STATE][0], reply_markup=REPLY_MARKUPS[FINAL_STATE])
 
+async def send_gif(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send gif command"""
+    for chat_id in context.bot_data[CHAT_IDS]:
+        if DEBUG_MODE:
+            print("Sending to", chat_id)
+        with open("pics/gifka.gif", 'rb') as file_handler:
+            await context.bot.send_animation(chat_id=chat_id, animation=file_handler)
+
 def main() -> None:
 
     """Start the bot."""
@@ -317,6 +325,7 @@ def main() -> None:
     application.add_handler(CommandHandler("menu", menu))
     application.add_handler(CommandHandler("set_faculty", set_faculty))
     application.add_handler(CommandHandler("send_final_message", send_final_message))
+    application.add_handler(CommandHandler("send_gif", send_gif))
     if DEBUG_MODE:
         application.add_handler(CommandHandler("state", get_cur_state))
         application.add_handler(CommandHandler("set_state", set_state))
