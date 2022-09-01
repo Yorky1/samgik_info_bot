@@ -179,13 +179,12 @@ async def about_sgik(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     for message_id in range(1, len(STATE_MESSAGES[cur_state])):
         await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[cur_state][message_id])
-
     context.user_data[STATE] = MENU_STATE
     await view_menu(update, context)
 
 async def set_faculty(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Menu command"""
-
+    context.bot_data[CHAT_IDS].add(update.effective_chat.id)
     cur_state = context.user_data[STATE]
     chat_id = update.effective_chat.id
     if cur_state != SET_FACULTY_STATE:
@@ -197,6 +196,12 @@ async def set_faculty(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     context.user_data[FACULTY] = update.message.text
     context.user_data[STATE] = context.user_data[PREV_STATE]
     await MESSAGE_FUNCTION[context.user_data[STATE]](update, context)
+
+async def final_message_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send final message"""
+    chat_id = update.effective_chat.id
+    await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[FINAL_STATE][0], reply_markup=REPLY_MARKUPS[FINAL_STATE])
+
 
 MESSAGE_FUNCTION={
     1:default_reply_by_state,
@@ -216,7 +221,8 @@ MESSAGE_FUNCTION={
     12:about_sgik,
     16:about_sgik,
     17:set_faculty,
-    18:final_message
+    18:final_message,
+    20:final_message_text
 }
 
 
@@ -247,6 +253,7 @@ def next_state(message: str, state: int) -> int:
 
 async def receive_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Message processing"""
+    context.bot_data[CHAT_IDS].add(update.effective_chat.id)
     if STATE not in context.user_data:
         return
 
@@ -277,6 +284,7 @@ async def receive_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Menu command"""
+    context.bot_data[CHAT_IDS].add(update.effective_chat.id)
     context.user_data[STATE] = MENU_STATE
     await view_menu(update, context)
 
