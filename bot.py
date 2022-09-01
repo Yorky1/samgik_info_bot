@@ -90,6 +90,8 @@ async def final_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     chat_id = update.effective_chat.id
     await context.bot.send_message(chat_id=chat_id, text=STATE_MESSAGES[FINAL_STATE][1], parse_mode='HTML')
     await context.bot.send_sticker(chat_id=chat_id, sticker="CAACAgIAAxkBAAIMT2MIw7rMWBISWOcTJ-v3NvGL4Z0DAAIVIgACnhE5SKMY7CIGSdVXKQQ")
+    with open("pics/gifka.gif", 'rb') as file_handler:
+        await context.bot.send_animation(chat_id=chat_id, animation=file_handler)
     context.user_data[STATE] = MENU_STATE
     await view_menu(update, context)
 
