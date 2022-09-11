@@ -1,9 +1,5 @@
 # samgik_info_bot
 
-Алашеев Иван Юрьевич
+Telegram bot that helps first-year students adapt to university using python-telegram-bot library.
 
-Бот - это по сути справочник для абитуриента, который поступает в вуз (в данном случае в СГИК). Он умеет отвечать на определенные вопросы.
-
-Ответы на вопросы лежат в bot_data.py, сам бот в bot.py.
-
-Пользовался yandex.cloud. На сервере лежит закомиченный здесь docker-compose.yml (т.е. на сервере работает команда sudo docker-compose up -d)
+You can check it [here](https://t.me/samgik_info_bot)
